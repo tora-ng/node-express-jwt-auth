@@ -11,5 +11,8 @@ module.exports.signup_post = (req, res) => {
 }
 
 module.exports.login_post = (req, res) => {
+    const {email, password} = req.body;
+
+    console.log('email: ', email, 'password: ', password);
     res.send('user login');
 }

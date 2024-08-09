@@ -6,6 +6,7 @@ const app = express();
 
 // middleware
 app.use(express.static('public')); // 정적 폴더
+app.use(express.json()); // json 데이터를 받을 수 있음
 
 // view engine
 app.set('view engine', 'ejs');
