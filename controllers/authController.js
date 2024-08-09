@@ -9,6 +9,16 @@ const handleErrors = (err) => {
         password: ''
     };
 
+    // incorrect email
+    if (err.message === 'incorrect email') {
+        errors.email = '이 이메일은 등록되지 않았습니다.';
+    }
+
+    // incorrect email
+    if (err.message === 'incorrect password') {
+        errors.password = '비밀번호가 틀렸습니다.';
+    }
+
     // duplicate error code
     if (err.code === 11000) {
         errors.email = '이 이메일은 이미 등록이 되어 있습니다.';
@@ -58,6 +68,14 @@ module.exports.signup_post = async (req, res) => {
 module.exports.login_post = async (req, res) => {
     const {email, password} = req.body;
 
-    console.log('email: ', email, 'password: ', password);
-    res.send('user login');
+    try {
+        const user = await User.login(email, password);
+        const token = createToken(user._id);
+        res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000});
+        res.status(200).json({ user: user._id});
+
+    } catch (err) {
+        const errors = handleErrors(err);
+        res.status(400).json({ errors });
+    }
 }

@@ -31,5 +31,18 @@ userSchema.pre('save', async function(next){
     next();
 });
 
+// static mothod to login user
+userSchema.statics.login = async function(email, password) {
+    const user = await this.findOne({ email });
+    if (user) {
+        const auth = await bcrypt.compare(password, user.password); // 입력된 비밀번호와 DB에 저장된 비밀번호 비교
+        if (auth) {
+            return user;
+        }
+        throw Error('incorrect password');
+    }
+    throw Error('incorrect email');
+}
+
 const User = mongoose.model('user', userSchema);
 module.exports = User;
